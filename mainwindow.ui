@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Cpp-Chat</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPlainTextEdit" name="plainTextEdit_message">
@@ -181,15 +181,17 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuTeste">
-    <property name="title">
-     <string>Teste</string>
-    </property>
-   </widget>
-   <addaction name="menuTeste"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_to</tabstop>
+  <tabstop>lineEdit_subject</tabstop>
+  <tabstop>plainTextEdit_message</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>textBrowser</tabstop>
+  <tabstop>listWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

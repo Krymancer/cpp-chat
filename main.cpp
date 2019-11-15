@@ -4,8 +4,11 @@
 #include <QDebug>
 #include <QTimer>
 #include <QPushButton>
+#include <QInputDialog>
+#include <QLineEdit>
 
 #include <string.h>
+#include <string>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>
@@ -16,8 +19,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <vector>
-
-#define USERNAME "client1"
 
 static MainWindow*  uiUpdateHandler;
 static QVector<QString> messagesQeue;
@@ -31,18 +32,13 @@ static char ip[INET_ADDRSTRLEN];
 
 
 static void sendMessage(){
-    qInfo() << "click";
-
-    QString username = USERNAME;
     QString reciver = uiUpdateHandler->getReciver();
     QString subject = uiUpdateHandler->getSubject();
     QString message = uiUpdateHandler->getMessage();
 
-    QString msg = "From: " + username + "\nSubject: " + subject + "\nMessage: " + message + "\n";
+    QString msg = "To: " + reciver + "\nSubject: " + subject + "\nMessage: " + message + "\n";
     QByteArray msgByte = msg.toLocal8Bit();
     const char* parsedMessage = msgByte.data();
-    qInfo() << msg << parsedMessage;
-
 
     if (write(mySocket, parsedMessage, strlen(parsedMessage) ) < 0) {
         perror("Message not sent");
@@ -61,12 +57,20 @@ void sendMessagetoUI(){
      }
 }
 
+bool itsToMe(QString message){
+    QString me = "To: " + QString::fromUtf8(username);
+    qInfo() << message << me;
+    return me == message;
+}
+
 void *reciveMessage(void *socket) {
     int their_sock = *(static_cast<int*>(socket));
     char msg[500];
     int len;
     while ((len = static_cast<int>(recv(their_sock, msg, 500, 0)) > 0)) {
         QString message = QString::fromUtf8(msg);
+        qInfo() << message;
+        if(itsToMe(message.QString::split('\n')[0]))
         writeMessage(message);
         memset(msg, '\0', sizeof(msg));
     }
@@ -83,8 +87,19 @@ int main(int argc, char *argv[]){
 
     qInfo() << argc << argv[0];
 
+    bool ok;
+    QString text = QInputDialog::getText(nullptr,
+            "Cpp-Chat", "Username:", QLineEdit::Normal,
+            QString(), &ok,nullptr );
+    if ( ok && !text.isEmpty() ) {
+        QByteArray usernameByte = text.toLocal8Bit();
+        const char* parsedUsername = usernameByte.data();
+       strcpy(username,parsedUsername);
+    } else {
+        exit(1);
+    }
+
     portno = 1010;
-    strcpy(username,USERNAME);
     mySocket = socket(AF_INET, SOCK_STREAM, 0);
     memset(serverAdress.sin_zero,'\0',sizeof(serverAdress.sin_zero));
     serverAdress.sin_family = AF_INET;
