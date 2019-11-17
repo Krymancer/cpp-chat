@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QMap>
+#include <QListWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,8 +23,16 @@ public:
 
     void addMessage(QString message);
     QPushButton* getSendButton();
+    void addChat(QString sender, QString message);
+    void updateChat(QString name);
+
+public slots:
+    void onListItemClicked(QListWidgetItem* item);
 
 private:
     Ui::MainWindow *ui;
+    QMap<QString,QString> messages;
+
+
 };
 #endif // MAINWINDOW_H

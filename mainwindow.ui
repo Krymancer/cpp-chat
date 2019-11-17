@@ -193,5 +193,22 @@
   <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>itemChanged(QListWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>530</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
