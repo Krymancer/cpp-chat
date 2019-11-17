@@ -30,14 +30,27 @@ static pthread_t reciveMessageThread;
 static char username[100];
 static char ip[INET_ADDRSTRLEN];
 
-
+static bool isNullEmpyOrOnlySpaces(QString string){
+    std::string str = string.toUtf8().data();
+    return string.isNull()
+            || string.isEmpty()
+            || str.find_first_not_of (' ') == str.npos
+            || str.find_first_not_of ('\t') == str.npos
+            || str.find_first_not_of ('\n') == str.npos
+            || str.find_first_not_of ('\r') == str.npos
+            || str.find_first_not_of ('\v') == str.npos
+            || str.find_first_not_of ('\f') == str.npos
+            || str.find_first_not_of (" \n\t\r\v\f") == str.npos;
+}
 static void sendMessage(){
     QString reciver = uiUpdateHandler->getReciver();
     QString subject = uiUpdateHandler->getSubject();
     QString message = uiUpdateHandler->getMessage();
     QString sing = username;
 
-    if(reciver.isEmpty() || message.isEmpty()){
+
+
+    if(isNullEmpyOrOnlySpaces(reciver) || isNullEmpyOrOnlySpaces(message)){
         return;
     }
 
@@ -103,8 +116,6 @@ int main(int argc, char *argv[]){
     MainWindow w;
     uiUpdateHandler = &w;
 
-    qInfo() << argc << argv[0];
-
     bool ok;
     QString text = QInputDialog::getText(nullptr,
             "Cpp-Chat", "Username:", QLineEdit::Normal,
@@ -142,10 +153,10 @@ int main(int argc, char *argv[]){
     }
 
     inet_ntop(AF_INET, reinterpret_cast<struct sockaddr*>(&serverAdress), ip, INET_ADDRSTRLEN);
-    qInfo() << "Conect to " << ip;
+    qInfo() << "Conect to " << inet_ntoa(serverAdress.sin_addr);
     pthread_create(&reciveMessageThread,nullptr,reciveMessage,&mySocket);
 
-    debugMessages();
+    //debugMessages();
 
     QObject::connect(w.getSendButton(),&QPushButton::clicked,sendMessage);
 
