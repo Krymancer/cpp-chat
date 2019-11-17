@@ -31,7 +31,7 @@ void MainWindow::addMessage(QString message){
     QString sender = splitedMessage.last();
     splitedMessage.pop_back();
     splitedMessage.pop_front();
-    message = "From: " + sender + "\n" + splitedMessage.join("\n") + "\n";
+    message = "From: " + sender + "\n" + splitedMessage.join("\n") + "\n\n";
     addChat(sender,message);
 }
 
